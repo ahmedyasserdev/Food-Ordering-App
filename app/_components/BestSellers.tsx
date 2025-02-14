@@ -1,17 +1,12 @@
 import MainHeading from '@/components/shared/MainHeading'
 import Menu from '@/components/shared/Menu'
-import { db } from '@/lib/prisma'
+import { getBestSellers } from '@/server/db/products'
 
 import React from 'react'
 
-const BestSellers = async() => {
+const BestSellers = async () => {
 
-    const bestSellers  = await db.product.findMany({
-        include : {
-            extras : true,
-            sizes : true
-        }
-    })
+    const bestSellers = await getBestSellers(3)
 
     return (
         <section>
@@ -22,7 +17,7 @@ const BestSellers = async() => {
                 </div>
 
 
-                <Menu items = {bestSellers} />
+                <Menu items={bestSellers} />
 
             </div>
 

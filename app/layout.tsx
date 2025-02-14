@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Roboto , Cairo} from "next/font/google";
 import "./globals.css";
 import Header from "@/components/shared/Header";
+import ReduxProvider from "@/providers/ReduxProvider";
 
 
 const roboto = Roboto({
@@ -31,12 +32,14 @@ export default function RootLayout({
     <html lang="en">
       <body
       >
-        <div className="flex flex-col min-h-screen" >
+       <ReduxProvider>
+       <div className="flex flex-col min-h-screen" >
           <Header />
           <main className="flex-1" >
           {children}
           </main>
         </div>
+       </ReduxProvider>
       </body>
     </html>
   );

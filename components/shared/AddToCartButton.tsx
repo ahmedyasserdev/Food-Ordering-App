@@ -16,7 +16,10 @@ import { Label } from "../ui/label"
 import { formatCurrency } from "@/lib/utils"
 import { motion } from "motion/react"
 import { ProductWithRelations } from "@/types"
-import { Extra, Product, Size } from "@prisma/client"
+import { Extra, Product, ProductSizes, Size } from "@prisma/client"
+import { Dispatch, SetStateAction, useState } from "react"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import { addItemToCart,  selectCartItems } from "@/redux/featutures/cart/cartSlice"
 type AddToCartButtonProps = {
     item: ProductWithRelations
 }
@@ -24,8 +27,38 @@ type AddToCartButtonProps = {
 
 
 const AddToCartButton = ({ item }: AddToCartButtonProps) => {
+    const cart = useAppSelector(selectCartItems)
+    const dispatch  = useAppDispatch()
+    const defaultSize = cart.find((ele) => ele.id === item.id)?.size || item.sizes.find((size) => size.name === ProductSizes.SMALL)
+    const [selectedSize, setSelectedSize] = useState<Size>(defaultSize!)
 
-   
+    const defaultExtra = cart.find((ele) => ele.id === item.id)?.extras || []
+    const [selectedExtras, setSelectedExtras] = useState<Extra[]>(defaultExtra!)
+
+    let totalPrice: number = item.basePrice;
+
+    if (selectedSize) {
+        totalPrice += selectedSize.price;
+    }
+
+    if (selectedExtras.length > 0) {
+        for (const extra of selectedExtras) {
+            totalPrice += extra.price
+        }
+
+    }
+
+    const handleAddToCart = () => {
+        dispatch(addItemToCart({ 
+            name : item.name ,
+            id : item.id ,
+            image : item.image ,
+            basePrice : item.basePrice ,
+            size : selectedSize ,
+            extras :  selectedExtras ,
+         }))
+    }
+
 
     return (
 
@@ -64,14 +97,17 @@ const AddToCartButton = ({ item }: AddToCartButtonProps) => {
                             <Label htmlFor="pick-size" className="font-bold ">
                                 Pick Your Size
                             </Label>
-                            <Sizes sizes={item.sizes} item={item} />
+                            <Sizes sizes={item.sizes} selectedSize={selectedSize} setSelectedSize={setSelectedSize} item={item} />
                         </div>
                         <div className="space-y-4 text-center" >
                             <Label htmlFor="add-extras" className="font-bold ">
                                 Any Extras?
                             </Label>
 
-                            <Extras extras={item.extras} item={item} />
+                            <Extras extras={item.extras} item={item}
+                                selectedExtras={selectedExtras}
+                                setSelectedExtras={setSelectedExtras}
+                            />
 
 
                         </div>
@@ -83,8 +119,10 @@ const AddToCartButton = ({ item }: AddToCartButtonProps) => {
                     <Button
                         type='submit'
                         className='w-full h-10'
+                        onClick={handleAddToCart}
                     >
                         Add to cart
+                        {formatCurrency(totalPrice)}
                     </Button>
 
 
@@ -101,14 +139,18 @@ export default AddToCartButton
 
 
 
-export function Sizes({ sizes, item }: { sizes: Size[], item: Product }) {
+export function Sizes({ sizes, item, selectedSize: selecetedSize, setSelectedSize }: {
+    sizes: Size[],
+    setSelectedSize: Dispatch<SetStateAction<Size>>,
+    selectedSize: Size, item: Product
+}) {
     return (
-        <RadioGroup defaultValue="small" >
+        <RadioGroup defaultValue={selecetedSize.id} >
             {
-                sizes.map((size: any) => (
+                sizes.map((size: Size) => (
                     <div className="flex items-center space-x-2 border border-gray-100 rounded-md p-4" key={size.id}>
-                        <RadioGroupItem value={size.value} id={size.id} />
-                        <Label htmlFor={size.id}>{size.value} {formatCurrency(size.price + item.basePrice)} </Label>
+                        <RadioGroupItem onClick={() => setSelectedSize(size)} value={size.name} checked={selecetedSize.id === size.id} id={size.id} />
+                        <Label htmlFor={size.id}>{size.name} {formatCurrency(size.price + item.basePrice)} </Label>
                     </div>
 
                 ))
@@ -118,13 +160,28 @@ export function Sizes({ sizes, item }: { sizes: Size[], item: Product }) {
 }
 
 
-function Extras({ extras, item }: { extras: Extra[], item: Product }) {
+function Extras({ extras, item, setSelectedExtras, selectedExtras }: {
+    selectedExtras: Extra[], setSelectedExtras: Dispatch<SetStateAction<Extra[]>>,
+    extras: Extra[], item: Product
+}) {
+
+
+    const handleExtra = (extra: Extra) => {
+        if (selectedExtras.find((e) => e.id === extra.id)) {
+            const filteredSelectedExtras = selectedExtras.filter((e) => e.id !== extra.id)
+            setSelectedExtras(filteredSelectedExtras)
+        } else {
+            setSelectedExtras((prev) => [...prev, extra])
+        }
+    }
     return (
         <div className="mt-2">
             {
                 extras.map((extra: any) => (
                     <div className="flex items-center space-x-2 border border-gray-100 rounded-md p-4 " key={extra.id}>
-                        <Checkbox id={extra.id} />
+                        <Checkbox
+                            onClick={() => handleExtra(extra)}
+                            checked={Boolean(selectedExtras.find((item) => item.id === extra.id))} id={extra.id} />
                         <Label htmlFor={extra.id}>{extra.value} {formatCurrency(extra.price)}</Label>
                     </div>
                 ))

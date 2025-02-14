@@ -1,6 +1,7 @@
 import { Routes } from "@/constants/enums"
 import Link from "./Link"
 import Navbar from "./Navbar"
+import CartButton from "./CartButton"
 
 
 const Header = () => {
@@ -13,6 +14,8 @@ const Header = () => {
             </Link>
 
             <Navbar />
+
+            <CartButton />
 
 
         </div>
