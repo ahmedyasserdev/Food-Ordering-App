@@ -2,9 +2,13 @@
 import { Product } from '@prisma/client'
 import MenuItem from './MenuItem'
 import { ProductWithRelations } from '@/types'
+import { getCurrentLocale } from '@/lib/getCurrentLocale'
+import getTrans from '@/lib/translation'
 type MenuProps = {items : ProductWithRelations[]}
 
-const Menu = ({items}: MenuProps) => {
+const Menu = async({items}: MenuProps) => {
+  const locale= await getCurrentLocale();
+  const {noProductsFound ,} = await getTrans(locale);
   return (
     <>
         {
@@ -20,7 +24,7 @@ const Menu = ({items}: MenuProps) => {
           ) : <>
               <p className="text-accent text-center " >
 
-                No Products Found 
+     {noProductsFound}
               </p>
           </>
         }

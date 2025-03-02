@@ -8,39 +8,48 @@ import { Button, buttonVariants } from '../ui/button'
 import { motion, useMotionValue, } from "motion/react"
 import { useMediaQuery } from '@custom-react-hooks/use-media-query';
 import { Menu, X } from 'lucide-react'
-type NavbarProps = {}
+type NavbarProps = {
+    translations : {[key : string] : string}
+}
 
 
-const links = [
-    {
-        id: crypto.randomUUID(),
-        title: "menu",
-        href: Routes.MENU,
-    },
-    {
-        id: crypto.randomUUID(),
-        title: "About",
-        href: Routes.ABOUT,
-    },
-    {
-        id: crypto.randomUUID(),
-        title: "contact",
-        href: Routes.CONTACT,
-    },
-    {
-        id: crypto.randomUUID(),
-        title: "Login",
-        href: `${Routes.AUTH}/${Pages.LOGIN}`,
-    },
 
-]
 
-const Navbar = ({ }: NavbarProps) => {
+
+const Navbar = ({translations }: NavbarProps) => {
     const [open, setOpen] = useState(false)
     const { locale } = useParams();
     const pathname = usePathname();
     const x = useMotionValue(0);
     const isTablet = useMediaQuery("(max-width: 991px)");
+
+
+    const links = [
+        {
+            id: crypto.randomUUID(),
+            title: translations.menu,
+            href: Routes.MENU,
+        },
+        {
+            id: crypto.randomUUID(),
+            title: translations.about,
+            href: Routes.ABOUT,
+        },
+        {
+            id: crypto.randomUUID(),
+            title: translations.contact,
+
+            href: Routes.CONTACT,
+        },
+        {
+            id: crypto.randomUUID(),
+            title: translations.login,
+
+            href: `${Routes.AUTH}/${Pages.LOGIN}`,
+        },
+    
+    ]
+
 
 
     const handleClick = () => {
@@ -58,7 +67,7 @@ const Navbar = ({ }: NavbarProps) => {
     }
 
     return (
-        <nav className='flex-1 flex justify-end ' >
+        <nav className='flex-1 flex justify-end  z-10' >
             <Button
                 variant="secondary"
                 size="sm"
@@ -68,7 +77,7 @@ const Navbar = ({ }: NavbarProps) => {
             >
                {open  ? <X className="!size-6"/>  : <Menu className="!size-6" />}  
             </Button>
-            <motion.ul className={cn(open ? "left-0" : "left-[-100%]", '  lg:flex fixed lg:static items-center gap-4 px-10 py-20 lg:p-0 bg-background  lg:bg-transparent transition-all duration-500 ')}
+            <motion.ul className={cn(open ? "left-0 w-full h-screen top-0" : "left-[-100%]", '  lg:flex  fixed lg:static items-center gap-4 px-10 py-20 lg:p-0 bg-background  lg:bg-transparent transition-all duration-500 ') }
                 style={{ x ,}}
             >
                 {
@@ -81,7 +90,7 @@ const Navbar = ({ }: NavbarProps) => {
                             className='my-6 lg:my-0 '
 
                         >
-                            <Link href={link.href}
+                            <Link href={`/${locale}/${link.href}`}
                                 className={
                                     cn("hover:text-primary   duration-200 transition-colors font-semibold",
 

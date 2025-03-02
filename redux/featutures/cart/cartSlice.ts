@@ -16,9 +16,9 @@ type CartState = {
 };
 
 
-
+const initialCartItems = localStorage.getItem("cartItems")
 const initialState: CartState = {
-  items: []
+  items:  initialCartItems ? JSON.parse(initialCartItems) : []
 }
 
 
