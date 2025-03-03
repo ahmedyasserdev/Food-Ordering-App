@@ -50,7 +50,7 @@ const Form = ({ translations }: FormProps) => {
         }
       }
       if (res?.ok) {
-        toast.error(translations.messages.loginSuccessful,{
+        toast.success(translations.messages.loginSuccessful,{
           className: "text-green-400",
         });
         router.replace(`/${locale}/${Routes.PROFILE}`);

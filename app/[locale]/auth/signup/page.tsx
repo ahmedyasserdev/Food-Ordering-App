@@ -3,7 +3,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Pages, Routes } from "@/constants/enums";
 import { Locale } from "@/i18n";
 import getTrans from "@/lib/translation";
-// import Form from "./_components/Form";
+import Form from "./_components/Form";
 
 async function SignupPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
@@ -16,7 +16,7 @@ async function SignupPage({ params }: { params: Promise<{ locale: Locale }> }) {
             <h2 className="text-2xl font-semibold text-center text-black mb-4">
               {translations.auth.register.title}
             </h2>
-            {/* <Form translations={translations} /> */}
+            <Form translations={translations} />
             <p className="mt-2 flex items-center justify-center text-accent text-sm">
               <span>{translations.auth.register.authPrompt.message}</span>
               <Link

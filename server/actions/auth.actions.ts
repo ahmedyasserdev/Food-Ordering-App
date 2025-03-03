@@ -1,10 +1,26 @@
 'use server'
 
 import { Locale } from "@/i18n"
+import { getCurrentLocale } from "@/lib/getCurrentLocale"
 import { db } from "@/lib/prisma"
 import getTrans from "@/lib/translation"
-import { loginSchema } from "@/validations/auth"
-import { compare } from 'bcrypt'
+import { loginSchema, signUpSchema } from "@/validations/auth"
+import { compare , hash } from 'bcrypt'
+
+
+export const getUserByEmail = async (email: string) => {
+    try {
+        const user = await db.user.findUnique({
+            where: {
+                email,
+            }
+        });
+
+        return user
+    } catch {
+        return null
+    }
+}
 
 
 export const login = async (credentials: Record<"email" | "password", string> | undefined, locale: Locale) => {
@@ -20,11 +36,7 @@ export const login = async (credentials: Record<"email" | "password", string> | 
 
     try {
         const { email, password } = result.data
-        const user = await db.user.findUnique({
-            where: {
-                email
-            }
-        });
+        const user = await getUserByEmail(email)
 
         if (!user) {
             return {
@@ -52,6 +64,63 @@ export const login = async (credentials: Record<"email" | "password", string> | 
                     status : 200,
                     message : translations.messages.loginSuccessful
                 }
+
+    } catch (error) {
+        console.error(error);
+        return {
+            status: 500,
+            message: translations.messages.unexpectedError,
+        };
+    }
+
+}
+
+
+export const signup  = async (prevState : unknown , formData : FormData) => {
+    const locale = await getCurrentLocale();
+    const translations = await getTrans(locale)
+
+    const result = signUpSchema(translations).safeParse(
+        Object.fromEntries(formData.entries())
+    );
+
+    if (!result.success) {
+        return {
+            error: result.error.formErrors.fieldErrors,
+           formData
+        }
+    }
+
+    try {
+        const {email , confirmPassword , password , name } = result.data
+        const user = await getUserByEmail(email)
+
+            if (user) {
+                return {
+                    status : 409 ,
+                    message : translations.messages.userAlreadyExists,
+                    formData
+                }
+            }
+
+            const hashedPassword = await hash(password , 10);
+            const createdUser = await db.user.create({
+                data : {
+                    name,
+                    email,
+                    password : hashedPassword
+                }
+            });
+
+            return {
+                status : 201 ,
+                message : translations.messages.accountCreated,
+                user : {
+                    id : createdUser.id,
+                    email : createdUser.email,
+                    name : createdUser.name
+                }
+            }
 
     } catch (error) {
         console.error(error);

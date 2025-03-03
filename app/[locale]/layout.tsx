@@ -52,7 +52,7 @@ export default async function RootLayout({
           <main className="flex-1" >
           {children}
           </main>
-          <Toaster position="top-right" />
+          <Toaster position={locale === Languages.ARABIC ? "top-left" : "top-right"} />
         </div>
        </ReduxProvider>
       </body>
