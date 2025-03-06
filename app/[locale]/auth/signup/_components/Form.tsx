@@ -31,7 +31,7 @@ const Form = ({ translations }: SignUpFormProps) => {
     const { getFormFields } = useFormFields({ slug: Pages.Register, translations })
     const [state, action, pending] = useActionState(signup, initialState);
     const router  = useRouter();
-    const locale = useParams().locale
+    const {locale} = useParams()
 
         useEffect(() => {
             if (state.status && state.message) {
@@ -81,9 +81,32 @@ const Form = ({ translations }: SignUpFormProps) => {
                 );
             })}
 
-            <Button type="submit" disabled={pending} className="w-full">
+<motion.div
+        initial={{
+          y: 20
+          , opacity: 0,
+          visibility: "hidden",
+        }}
+
+        animate={{
+          y: 0
+          , opacity: 1,
+          visibility: "visible",
+        }}
+
+        transition={{
+          duration: 0.4,
+          ease: "easeInOut"
+
+        }}
+      >
+         <Button type="submit" disabled={pending} className="w-full">
                 {pending ? <Loader /> : translations.auth.register.submit}
             </Button>
+      </motion.div>
+
+
+         
 
         </form>
     )
