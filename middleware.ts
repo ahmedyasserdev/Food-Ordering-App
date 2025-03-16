@@ -6,6 +6,7 @@ import { i18n, LanguageType, Locale } from './i18n';
 import { withAuth } from 'next-auth/middleware'
 import { getToken } from 'next-auth/jwt';
 import { Pages, Routes } from './constants/enums';
+import { UserRole } from '@prisma/client';
 
 
 
@@ -75,9 +76,24 @@ export default withAuth(async function middleware(req: NextRequest) {
   }
 
     if (isAuth && isAuthPage) {
+      const role = isAuth.role;
+      if (role === UserRole.ADMIN) {
+        return NextResponse.redirect(
+          new URL(`/${currentLocale}/${Routes.ADMIN}`, req.url)
+        )
+      }
       return NextResponse.redirect(
         new URL(`/${currentLocale}/${Routes.PROFILE}`, req.url)
       )
+    }
+
+    if (isAuth && pathname.startsWith(`/${currentLocale}/${Routes.ADMIN}`)) {
+      const role = isAuth.role;
+      if (role !== UserRole.ADMIN){
+        return NextResponse.redirect(
+          new URL(`/${currentLocale}/${Routes.PROFILE}`, req.url)
+        )
+      }
     }
 
   

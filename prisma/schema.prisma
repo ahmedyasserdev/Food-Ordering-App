@@ -18,8 +18,8 @@ model User {
   streetAdress String?
   city         String?
   country      String?
+  role UserRole @default(USER)
   orders       OrderProduct[]
-
   sessions  Session[]
   accounts  Account[]
   createdAt DateTime  @default(now())

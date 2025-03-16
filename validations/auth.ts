@@ -42,6 +42,8 @@ export const signUpSchema = (translations: Translations) => {
 };
 
 
+
+
 export type ValidationErrors = |
 {
   [key: string]: string[];

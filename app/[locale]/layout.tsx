@@ -6,6 +6,7 @@ import ReduxProvider from "@/providers/ReduxProvider";
 import { Languages } from "@/constants/enums";
 import { Locale } from "@/i18n";
 import { Toaster } from 'react-hot-toast';
+import NextAuthSessionProvider from "@/providers/NextAuthSessionProvider";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -46,7 +47,8 @@ export default async function RootLayout({
 
       className  = {locale === Languages.ARABIC ? cairo.className : roboto.className}
       >
-       <ReduxProvider>
+      <NextAuthSessionProvider>
+      <ReduxProvider>
        <div className="flex flex-col min-h-screen" >
           <Header />
           <main className="flex-1" >
@@ -55,6 +57,8 @@ export default async function RootLayout({
           <Toaster position={locale === Languages.ARABIC ? "top-left" : "top-right"} />
         </div>
        </ReduxProvider>
+      </NextAuthSessionProvider>
+
       </body>
     </html>
   );

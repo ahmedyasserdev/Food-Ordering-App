@@ -31,7 +31,7 @@ const Form = ({ translations }: SignUpFormProps) => {
     const { getFormFields } = useFormFields({ slug: Pages.Register, translations })
     const [state, action, pending] = useActionState(signup, initialState);
     const router  = useRouter();
-    const {locale} = useParams()
+    const {locale} = useParams();
 
         useEffect(() => {
             if (state.status && state.message) {
