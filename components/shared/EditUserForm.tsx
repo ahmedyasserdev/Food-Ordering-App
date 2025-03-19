@@ -50,7 +50,7 @@ const EditUserForm = ({ translations, user }: EditUserFormProps) => {
     const {getFormFields} = useFormFields({slug : Routes.PROFILE, translations });
     const session = useSession();
     const [isAdmin, setIsAdmin] = useState(user.role === UserRole.ADMIN);
-      const [state , action ,pending] = useActionState(updateProfile, initialState);
+      const [state , action ,pending] = useActionState(updateProfile.bind(null,isAdmin), initialState);
       const [selectedImage, setSelectedImage] = useState(user.image ?? "");
 
 
@@ -95,14 +95,16 @@ const EditUserForm = ({ translations, user }: EditUserFormProps) => {
           return (
             <motion.div key={field.name} className="mb-3"
               initial = {{
-                y : 50 ,
+               opacity : 0,
+               visibility : 'hidden'
               }}
                 animate = {{
-                  y : 0
+                  opacity : 1 ,
+                  visibility : 'visible'
                 }}
                 transition={{
                   delay : 0.2 * index ,
-                  ease : 'backIn'
+                  ease : 'easeIn'
                 }}
             >
               <FormFields
@@ -115,7 +117,7 @@ const EditUserForm = ({ translations, user }: EditUserFormProps) => {
           );
         })}
 
-{session.data?.user.role === UserRole.ADMIN && (
+{user.role === UserRole.ADMIN && (
           <div className="flex items-center gap-2 my-4">
             <Checkbox
               name="admin"

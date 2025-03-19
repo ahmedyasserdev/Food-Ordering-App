@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     const file = formData.get("file") as FormDataFile | null;
-    const pathName = formData.get("pathName") as string;
+    const pathname = formData.get("pathname") as string;
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     const uploadResponse = await cloudinary.uploader.upload(
       `data:${file.type};base64,${base64File}`,
       {
-        folder: pathName,
+        folder: pathname,
         transformation: [
           { width: 200, height: 200, crop: "fill", gravity: "face" },
         ],
