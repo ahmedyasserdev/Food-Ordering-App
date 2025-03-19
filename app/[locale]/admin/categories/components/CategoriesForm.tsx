@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { addCategory } from "@/server/actions/category.actions"
-import { Translations } from "@/types"
+import { InitialStateInterface, Translations } from "@/types"
 import { ValidationErrors } from "@/validations/auth"
 import { useActionState, useEffect } from "react"
 import toast from "react-hot-toast"
@@ -14,12 +14,8 @@ type CategoriesFormProps = {
     translations: Translations
 }
 
-type InitialStateType = {
-    message?: string;
-    error?: ValidationErrors;
-    status?: number | null;
-};
-const initialState: InitialStateType = {
+
+const initialState: InitialStateInterface = {
     message: "",
     error: {},
     status: null,
@@ -50,6 +46,7 @@ const CategoriesForm = ({ translations }: CategoriesFormProps) => {
                         type="text"
                         name="name"
                         id="name"
+                        disabled={pending}
                         placeholder={translations.admin.categories.form.name.placeholder}
                     />
                     <Button type="submit" size="lg" disabled={pending}>

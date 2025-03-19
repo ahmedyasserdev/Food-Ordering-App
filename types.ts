@@ -1,6 +1,11 @@
 import {  Prisma,  } from "@prisma/client";
+import { ValidationErrors } from "./validations/auth";
 
-
+export interface InitialStateInterface  {
+  message?: string;
+  error?: ValidationErrors;
+  status?: number | null;
+};
 export type ProductWithRelations = Prisma.ProductGetPayload<{
     include: {
         sizes: true

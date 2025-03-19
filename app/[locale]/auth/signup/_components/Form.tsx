@@ -3,7 +3,7 @@ import { motion } from "motion/react"
 import FormFields from "@/components/shared/form-fields/FormFields"
 import { Pages, Routes } from "@/constants/enums"
 import { useFormFields } from "@/hooks/useFormFields"
-import { IFormField, Translations } from "@/types"
+import { IFormField, InitialStateInterface, Translations } from "@/types"
 import { Button } from "@/components/ui/button"
 import Loader from "@/components/shared/Loader"
 import { useActionState, useEffect } from "react"
@@ -15,11 +15,9 @@ import { useParams, useRouter } from "next/navigation"
 type SignUpFormProps = {
     translations: Translations
 }
-const initialState: {
-    message?: string;
-    error?: ValidationErrors;
-    status?: number | null;
+const initialState : InitialStateInterface & {
     formData?: FormData | null;
+
 } = {
     message: "",
     error: {},
