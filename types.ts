@@ -183,7 +183,12 @@ export interface IOption {
               required: string;
             };
           };
-        };
+        }; 
+        delete : {
+          title : string ;
+          description : string ;
+          confirm : string ;
+        }
       };
       "menu-items": {
         addItemSize: string;

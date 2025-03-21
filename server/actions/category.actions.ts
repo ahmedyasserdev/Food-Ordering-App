@@ -6,6 +6,7 @@ import { db } from "@/lib/prisma";
 import getTrans from "@/lib/translation";
 import { addCategorySchema, updateCategorySchema } from "@/validations/category";
 import { revalidatePath } from "next/cache";
+import { pages } from "next/dist/build/templates/app-page";
 
 export const addCategory = async (prevState: unknown, formData: FormData) => {
     const locale = await getCurrentLocale(); 
@@ -96,4 +97,43 @@ export const updateCategory = async(id : string ,prevState: unknown, formData: F
         };
       }
 
+}
+
+
+
+export const deleteCategory = async (id : string) : Promise<{status : number , message :string}> => {
+    const locale = await getCurrentLocale(); 
+    const translations = await getTrans(locale);
+   
+    if (!id) {
+        return {
+                status : 400 ,
+                message: translations.messages.unexpectedError,
+        }
+    }
+
+
+    try {
+          
+        await db.category.delete({
+            where : {
+                id 
+            }
+        })
+
+
+        revalidatePath(`/${locale}/${Routes.ADMIN}/${Pages.CATEGORIES}`);
+        revalidatePath(`/${locale}/${Routes.MENU}`);
+
+            return {
+                message :translations.messages.deleteCategorySucess ,
+                status : 200 ,
+            }
+    } catch (error) {
+        console.error(error);
+        return {
+          status: 500,
+          message: translations.messages.unexpectedError,
+        };
+    }
 }

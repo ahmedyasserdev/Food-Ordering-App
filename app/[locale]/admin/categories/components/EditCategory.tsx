@@ -15,7 +15,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Edit } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import { Directions, Languages } from '@/constants/enums';
 import { useActionState } from 'react';
 import { updateCategory } from '@/server/actions/category.actions';
 import Loader from '@/components/shared/Loader';
