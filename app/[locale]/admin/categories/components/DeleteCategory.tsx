@@ -46,7 +46,7 @@ const DeleteCategory = ({ categoryId , translations }: DeleteCategoryProps) => {
     return (
         <Dialog >
             <DialogTrigger>
-                <Button variant="secondary" size="icon" >
+                <Button variant="outline"  >
                     <Trash2 />
 
                 </Button>

@@ -1,15 +1,16 @@
 import cloudinary from "@/lib/cloudinary";
 import { NextResponse } from "next/server";
 
+// Define the type for the form data file
 type FormDataFile = Blob & {
-  name?: string; 
+  name?: string; // Optional: Some browsers may add this
 };
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     const file = formData.get("file") as FormDataFile | null;
-    const pathname = formData.get("pathname") as string;
+    const pathName = formData.get("pathName") as string;
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -19,10 +20,11 @@ export async function POST(request: Request) {
     const uploadResponse = await cloudinary.uploader.upload(
       `data:${file.type};base64,${base64File}`,
       {
-        folder: pathname,
+        folder: pathName,
         transformation: [
           { width: 200, height: 200, crop: "fill", gravity: "face" },
         ],
+        resource_type: "auto",
       }
     );
     return NextResponse.json({ url: uploadResponse.secure_url });
