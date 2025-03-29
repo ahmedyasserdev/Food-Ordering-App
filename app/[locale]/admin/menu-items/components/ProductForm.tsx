@@ -13,7 +13,7 @@ import { Category, Extra, Size } from "@prisma/client"
 import AddSize from "./AddSize"
 import { motion } from "motion/react"
 import AddExtras from "./AddExtras"
-import { addProduct } from "@/server/actions/product.actions"
+import { addProduct, updateProduct } from "@/server/actions/product.actions"
 import toast from "react-hot-toast"
 
 type ProductFormProps = {
@@ -39,7 +39,16 @@ const ProductForm = ({ product, translations, categories }: ProductFormProps) =>
   const [sizes, setSizes] = useState<Partial<Size>[]>(product ? product.sizes : [])
   const [extras, setExtras] = useState<Partial<Extra>[]>([])
 
-  const [state, action, pending] = useActionState(addProduct.bind(null, { categoryId }), initialState)
+  const [state, action, pending] = useActionState(
+    product
+      ? updateProduct.bind(null, {
+          productId: product.id,
+          options: { sizes, extras },
+        })
+      : addProduct.bind(null, { categoryId, options: { sizes, extras } }),
+    initialState
+  );
+  
   const formData = new FormData()
   Object.entries(product ?? {}).forEach(([key, value]) => {
     if (value !== null && value !== undefined && key !== "image") {
@@ -51,7 +60,7 @@ const ProductForm = ({ product, translations, categories }: ProductFormProps) =>
 
   useEffect(() => {
     if (state.message && state.status && !pending) {
-      if (state.status === 201) {
+      if (state.status === 201 || state.status == 200) {
         toast.success(state.message,);
       } else {
         toast.error(state.message,);
@@ -77,6 +86,7 @@ const ProductForm = ({ product, translations, categories }: ProductFormProps) =>
               <FormFields
                 {...field}
                 error={state?.error}
+                disabled={pending}
                 defaultValue={fieldValue as string}
               />
             </motion.div>
