@@ -66,6 +66,7 @@ const ProductFormActions = ({ translations, pending, product }: ProductFormActio
 
       </div>
       <Link
+        
         href={`/${locale}/${Routes.ADMIN}/${Pages.MENU_ITEMS}`}
         className={`w-full mt-4 ${buttonVariants({ variant: "outline" })}`}
       >

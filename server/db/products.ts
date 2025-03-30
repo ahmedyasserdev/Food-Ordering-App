@@ -1,4 +1,3 @@
-import { ProductWithRelations } from '@/types';
 import { cache } from "@/lib/cache";
 import { db } from "@/lib/prisma";
 
@@ -79,6 +78,6 @@ export const getProductById = cache(
             }
 
         })
-    }, ["product"],
+    }, [`product-${crypto.randomUUID()}`],
     { revalidate: 3600 }
 )

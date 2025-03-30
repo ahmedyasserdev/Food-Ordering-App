@@ -6,7 +6,6 @@ import { db } from "@/lib/prisma";
 import getTrans from "@/lib/translation";
 import { addCategorySchema, updateCategorySchema } from "@/validations/category";
 import { revalidatePath } from "next/cache";
-import { pages } from "next/dist/build/templates/app-page";
 
 export const addCategory = async (prevState: unknown, formData: FormData) => {
     const locale = await getCurrentLocale(); 

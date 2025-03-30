@@ -242,6 +242,11 @@ export type Translations = {
   category: string;
   copyRight: string;
   noProductsFound: string;
+  "delete-action": {
+    title: string;
+    description: string;
+    confirm: string;
+  }
 };
 
 
