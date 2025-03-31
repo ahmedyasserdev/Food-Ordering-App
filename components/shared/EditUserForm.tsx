@@ -117,7 +117,7 @@ const EditUserForm = ({ translations, user }: EditUserFormProps) => {
           );
         })}
 
-{user.role === UserRole.ADMIN && (
+{session.data?.user.role === UserRole.ADMIN && (
           <div className="flex items-center gap-2 my-4">
             <Checkbox
               name="admin"
